@@ -67,11 +67,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
         // Perform action on click
         switch(v.getId()) {
             case R.id.renew:
+
                 new Obnova().execute();
                 break;
 
             case R.id.settings:
                 //Stop MediaPlayer
+               // Log.e(" linka"," "+pole.size());
                 Intent intent = new Intent(MainActivity.this,Settings.class);
                 startActivity(intent);
                 break;
@@ -83,7 +85,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private class Obnova extends AsyncTask<Void, Void, Void> {
 
-        ProgressDialog dialog=new ProgressDialog(context);
 
 
         @Override
@@ -99,7 +100,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 obj = new RSSSmeCitac();
                 obj.fetchXML();
 
+                RSSSmeCitac pom =(RSSSmeCitac) obj;
+
+
                 Log.e("Asyntask", "pocas");
+
+                while (!((RSSSmeCitac) obj).getkoniec()){
+
+
+                }
 
 
                 // Log.e("Ukoncenie","ukoncena");
@@ -110,9 +119,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             @Override
             protected void onPreExecute () {
-                dialog.setMessage("Cakajte prosim..");
-                dialog.show();
                 Log.e("Asyntask", "Pred");
+          //      pole.clear();
 
             }
 
@@ -121,8 +129,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 super.onPostExecute(Void);
 
                 pole = obj.getArrayList();
+
                 RSSSmeCitac pom =(RSSSmeCitac) obj;
-              //  pom.vypis();
+
+            //    pom.vypis();
+
                 nazov.setText(obj.getDennik());
 
                 if (obj.getDennik().equals("SME")) {
@@ -136,7 +147,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
                 listView.setAdapter(adapter);
 
-                dialog.dismiss();
+
             }
         }
 

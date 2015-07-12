@@ -25,6 +25,7 @@ public class RSSSmeCitac implements GiveArrayList{
     private String cas = "";
     private String dennik ="SME";
 
+    private boolean koniec=false;
     private boolean zaciatok=true;
 
 
@@ -86,73 +87,12 @@ public class RSSSmeCitac implements GiveArrayList{
         this.urlString = url;
     }
 
-    public void parseXMLAndStoreIt(XmlPullParser myParser) {
-        int event;
-        String text = null;
 
-        try {
-            event = myParser.getEventType();
 
-            while (event != XmlPullParser.END_DOCUMENT) {
-                String name = myParser.getName();
-                //  Log.e("meno", name);
+    public boolean getkoniec(){
+        return koniec;
 
-                switch (event) {
-                    case XmlPullParser.START_TAG:
-
-                        //  Log.i("starting", "" + myParser.getName());
-                        break;
-
-                    case XmlPullParser.TEXT:
-                        text = myParser.getText();
-                        break;
-
-                    case XmlPullParser.END_TAG:
-
-                        if (zaciatok) {
-
-                            if (name.equals("image")) {
-
-                                zaciatok = false;
-                            }
-                        } else {
-
-                            // Log.i("ending",""+event);
-                            if (name.equals("title")) {
-                                title = text;
-                                //     Log.d("title ", "" + title);
-                            } else if (name.equals("link")) {
-                                link = text;
-                                //    Log.d("link ", "" + link);
-                            } else if (name.equals("pubDate")) {
-                                String pomocnyDatum = text;
-                                //Log.e("ok",""+ pomocnyDatum);
-
-                                datum = pomocnyDatum.substring(5, 16);
-                                cas = pomocnyDatum.substring(17, 25);
-
-                                //    Log.d("datum", "" + datum);
-                                //  Log.d("cas", "" + cas);
-                                pole.add(new PrvokPola(title, datum, cas, dennik, link));
-                                break;
-                            } else {
-
-                            }
-                            break;
-                        }
-                }
-
-                event = myParser.next();
-            }
-            parsingComplete = false;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            //    Log.e("Chyba","Parsovanie RSSSme");
-
-        }
     }
-
 
     public void vypis() {
 
@@ -164,6 +104,80 @@ public class RSSSmeCitac implements GiveArrayList{
 
     public void fetchXML(){
         Thread thread = new Thread(new Runnable(){
+
+            public void parseXMLAndStoreIt(XmlPullParser myParser) {
+                int event;
+                String text = null;
+                String zaciatocnyPrvok="";
+
+                try {
+                    event = myParser.getEventType();
+
+                    while (event != XmlPullParser.END_DOCUMENT) {
+                        String name = myParser.getName();
+
+
+                        switch (event) {
+                            case XmlPullParser.START_TAG:
+
+                                //  Log.i("starting", "" + myParser.getName());
+                                break;
+
+                            case XmlPullParser.TEXT:
+                                text = myParser.getText();
+                                break;
+
+                            case XmlPullParser.END_TAG:
+
+                                if (zaciatok) {
+
+                                    if (name.equals("image")) {
+
+                                        zaciatok = false;
+                                    }
+                                } else {
+
+                                    // Log.i("ending",""+event);
+                                    if (name.equals("title")) {
+                                        title = text;
+                                        //     Log.d("title ", "" + title);
+                                    } else if (name.equals("link")) {
+                                        link = text;
+                                        //    Log.d("link ", "" + link);
+                                    } else if (name.equals("pubDate")) {
+                                        String pomocnyDatum = text;
+                                        //Log.e("ok",""+ pomocnyDatum);
+
+                                        datum = pomocnyDatum.substring(5, 16);
+                                        cas = pomocnyDatum.substring(17, 25);
+
+                                    } else if (name.equals("dc:creator")) {
+                                        String dennik = text;
+                                        //Log.e("ok",""+ pomocnyDatum);
+                                        //    Log.d("datum", "" + datum);
+                                        //  Log.d("cas", "" + cas);
+                                        pole.add(new PrvokPola(title, datum, cas, dennik, link));
+                                        break;
+                                    } else {
+
+                                    }
+                                    break;
+                                }
+                        }
+
+                        event = myParser.next();
+                    }
+                    parsingComplete = false;
+                    koniec=true;
+                    Log.e("Ukoncene","rozparsovane");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("Chyba", "Parsovanie RSSSme");
+                    pole.add(new PrvokPola("\t\t\tNiekde nastala chyba.\n\t\t\tSkuste obnovit neskor", "", "", "", ""));
+                    koniec=true;
+                }
+            }
+
             @Override
             public void run() {
                 try {
@@ -172,8 +186,8 @@ public class RSSSmeCitac implements GiveArrayList{
                     URL url = new URL(urlString);
                     HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 
-                    conn.setReadTimeout(10000 /* milliseconds */);
-                    conn.setConnectTimeout(15000 /* milliseconds */);
+                    conn.setReadTimeout(1000 /* milliseconds */);
+                    conn.setConnectTimeout(1500 /* milliseconds */);
                     conn.setRequestMethod("GET");
                     conn.setDoInput(true);
                     conn.connect();
@@ -190,18 +204,22 @@ public class RSSSmeCitac implements GiveArrayList{
                     myparser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
                     myparser.setInput(stream, null);
 
-               //     Log.e("Ukoncene", "nacitane");
+                    Log.e("Ukoncene", "nacitane");
+
 
                     parseXMLAndStoreIt(myparser);
                     stream.close();
 
-                 //   Log.e("Ukoncene", "Zparsovane");
+                 //  Log.e("druhe", "druhe");
 
+               // vypis();
 
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    Log.e("Chyba","url connection");
+                    Log.e("Chyba", "url connection");
+                    pole.add(new PrvokPola("\t\t\tNiekde nastala chyba.\n\t\t\tSkuste obnovit neskor", "", "", "", ""));
+                    koniec=true;
                 }
 
             }
