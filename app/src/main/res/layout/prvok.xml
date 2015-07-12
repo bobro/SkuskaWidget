@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+
+    <LinearLayout
+        android:id="@+id/prvy"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="100"
+        android:padding="5dp">
+
+
+        <TextView
+            android:id="@+id/cas"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="33"
+            android:text="15:20"
+            />
+        <TextView
+            android:id="@+id/datum"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="33"
+            android:text="15.12.2015"
+            />
+
+        <TextView
+            android:id="@+id/denniknazov"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="33"
+            android:gravity="right"
+            android:text="SME"
+
+            />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/titulok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:textColor="@color/Black"
+        android:paddingTop="0dp"
+        android:paddingBottom="5dp"
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp"
+        android:text="Daco sa stalo"
+        />
+
+
+</LinearLayout>
