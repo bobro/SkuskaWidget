@@ -5,13 +5,27 @@
 
     >
 
+    <TextView
+        android:id="@+id/titulok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:textColor="@color/Black"
+        android:paddingTop="5dp"
+        android:paddingBottom="2dp"
+        android:paddingRight="10dp"
+        android:paddingLeft="5dp"
+        android:text="Daco sa stalo"
+        />
+
     <LinearLayout
         android:id="@+id/prvy"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="100"
-        android:padding="5dp">
+        android:padding="0dp">
 
 
         <TextView
@@ -19,6 +33,8 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="33"
+            android:paddingLeft="5dp"
+            android:textSize="11dp"
             android:text="15:20"
             />
         <TextView
@@ -27,6 +43,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="25"
             android:text="15.12.2015"
+            android:textSize="11dp"
             />
 
         <TextView
@@ -35,6 +52,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="41"
             android:gravity="right"
+            android:textSize="11dp"
             android:text="SME"
 
             />
@@ -42,19 +60,6 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/titulok"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="15dp"
-        android:textStyle="bold"
-        android:textColor="@color/Black"
-        android:paddingTop="0dp"
-        android:paddingBottom="5dp"
-        android:paddingRight="5dp"
-        android:paddingLeft="5dp"
-        android:text="Daco sa stalo"
-        />
 
 
 </LinearLayout>

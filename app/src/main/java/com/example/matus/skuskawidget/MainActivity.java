@@ -38,6 +38,7 @@ public class MainActivity extends ListActivity implements View.OnClickListener{
     private ImageButton setting;
     protected Context context = this;
     private String casopis="SME";
+    private  TextView rubrika;
 
         //TODO spravit shared preferencies na dennik aky prave chce pozerat - v alarm manayerovi budem prepisovat datum na + cas ktory chcem
         //TODO v obnovit budem vztvarat alarmanazer
@@ -54,7 +55,7 @@ public class MainActivity extends ListActivity implements View.OnClickListener{
         setting = (ImageButton) findViewById(R.id.settings);
         setting.setOnClickListener(this);
 
-
+        rubrika = (TextView) findViewById(R.id.nazovRubriky);
 
         /*
         pole.add(new PrvokPola());
@@ -106,6 +107,10 @@ public class MainActivity extends ListActivity implements View.OnClickListener{
             if (netInfo != null && netInfo.isAvailable() && netInfo.isConnected()) {
 
                 SharedPreferences preferences = getSharedPreferences("WIDGET_FOR_RSS",Context.MODE_PRIVATE);
+
+
+
+
                 if(preferences.getString("Dennik","")!=""){
                     casopis=preferences.getString("Dennik","");
                  //   Log.e("dennik",""+preferences.getString("Dennik",""));
@@ -167,7 +172,10 @@ public class MainActivity extends ListActivity implements View.OnClickListener{
 
             //    pom.vypis();
 
+                SharedPreferences preferences = getSharedPreferences("WIDGET_FOR_RSS",Context.MODE_PRIVATE);
+
                 nazov.setText(obj.getDennik());
+                rubrika.setText(preferences.getString("Rubrika", ""));
 
                 if (obj.getDennik().equals("SME")) {
                     ((TextView) findViewById(R.id.nazov)).setTextColor(getResources().getColor(R.color.DarkRed));
