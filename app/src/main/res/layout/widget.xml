@@ -16,7 +16,6 @@
         android:padding="10dip"
         android:layout_margin="5dp"
         android:textSize="30dp"
-        android:textAllCaps="true"
         android:text="nazov"
         android:textStyle="bold" />
     <ImageButton
@@ -41,7 +40,7 @@
 </RelativeLayout>
     <ListView
         android:background="@color/WhiteSmoke"
-        android:id="@+id/list"
+        android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

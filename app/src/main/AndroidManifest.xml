@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Settings"
-            android:label="Settings">
+            android:label="Nastavenia">
 
 
         </activity>

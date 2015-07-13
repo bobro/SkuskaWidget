@@ -1,12 +1,12 @@
 package com.example.matus.skuskawidget;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -18,42 +18,42 @@ import java.util.HashMap;
  * Created by Matus on 10.7.15.
  */
 
-public class RSSSmeCitac implements GiveArrayList{
+public class RSSDennikNCitac implements GiveArrayList{
 
     private String title = "";
     private String link = "";
     private String datum ="";
     private String cas = "";
-    private String dennik ="SME";
+    private String dennik ="DennikN";
     private Context context=null;
 
     private boolean koniec=false;
     private boolean zaciatok=true;
 
-    private HashMap<String,String> linky;
-
     private ArrayList<PrvokPola> pole;
 
-    private String urlString="http://rss.sme.sk/rss/rss.asp?id=frontpage";
+    private String urlString="https://dennikn.sk/feed/";
     private XmlPullParserFactory xmlFactoryObject;
 
     public volatile boolean parsingComplete = true;
 
-    public RSSSmeCitac(Context context){
+    private HashMap<String,String> linky;
+
+
+
+    public RSSDennikNCitac(Context context){
 
         pole = new ArrayList<PrvokPola>();
-
         this.context=context;
-
         linky = new HashMap<>();
-        linky.put("Hlavne spravy","http://rss.sme.sk/rss/rss.asp?id=frontpage");
-        linky.put("Z domova","http://rss.sme.sk/rss/rss.asp?sek=smeonline&rub=online_zdom");
-        linky.put("Zahranicie","http://rss.sme.sk/rss/rss.asp?sek=smeonline&rub=online_zahr");
-        linky.put("Ekonomika","http://rss.sme.sk/rss/rss.asp?sek=ekon");
-        linky.put("Kultura","http://rss.sme.sk/rss/rss.asp?sek=kult");
-        linky.put("Sport","http://rss.sme.sk/rss/rss.asp?sek=sport");
-        linky.put("Tech","http://rss.sme.sk/rss/rss.asp?sek=tech");
-        linky.put("Auto","http://rss.sme.sk/rss/rss.asp?sek=auto");
+        linky.put("Slovensko","https://dennikn.sk/slovensko/feed/");
+        linky.put("Hlavne spravy","https://dennikn.sk/slovensko/feed/");
+        linky.put("Svet","https://dennikn.sk/svet/feed/");
+        linky.put("Ekonomika","https://dennikn.sk/ekonomika/feed/");
+        linky.put("Kultura","https://dennikn.sk/kultura/feed/");
+        linky.put("Sport","https://dennikn.sk/sport/feed/");
+        linky.put("Veda","https://dennikn.sk/veda/feed/");
+        linky.put("Shooty","https://dennikn.sk/shooty/feed/");
 
 
 
@@ -129,14 +129,14 @@ public class RSSSmeCitac implements GiveArrayList{
             public void parseXMLAndStoreIt(XmlPullParser myParser) {
                 int event;
                 String text = null;
-
+                String zaciatocnyPrvok="";
 
                 try {
                     event = myParser.getEventType();
 
                     while (event != XmlPullParser.END_DOCUMENT) {
                         String name = myParser.getName();
-
+                        //Log.e("asd",""+name);
 
                         switch (event) {
                             case XmlPullParser.START_TAG:
@@ -152,7 +152,7 @@ public class RSSSmeCitac implements GiveArrayList{
 
                                 if (zaciatok) {
 
-                                    if (name.equals("image")) {
+                                    if (name.equals("generator")) {
 
                                         zaciatok = false;
                                     }
@@ -171,13 +171,11 @@ public class RSSSmeCitac implements GiveArrayList{
 
                                         datum = pomocnyDatum.substring(5, 16);
                                         cas = pomocnyDatum.substring(17, 25);
-
-                                    } else if (name.equals("dc:creator")) {
-                                        String dennik = text;
-                                        //Log.e("ok",""+ pomocnyDatum);
-                                        //    Log.d("datum", "" + datum);
-                                        //  Log.d("cas", "" + cas);
-                                        pole.add(new PrvokPola(title, datum, cas, dennik, link));
+                                        //  Log.e("datum",""+datum);
+                                        //  Log.e("cas","cas"+cas);
+                                    }else if (name.equals("dc:creator")){
+                                        String creator=text;
+                                        pole.add(new PrvokPola(title, datum, cas, creator, link));
                                         break;
                                     } else {
 

@@ -25,7 +25,7 @@
             android:id="@+id/datum"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight="33"
+            android:layout_weight="25"
             android:text="15.12.2015"
             />
 
@@ -33,7 +33,7 @@
             android:id="@+id/denniknazov"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight="33"
+            android:layout_weight="41"
             android:gravity="right"
             android:text="SME"
 

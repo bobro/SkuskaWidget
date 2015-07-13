@@ -1,12 +1,12 @@
 package com.example.matus.skuskawidget;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -18,14 +18,14 @@ import java.util.HashMap;
  * Created by Matus on 10.7.15.
  */
 
-public class RSSSmeCitac implements GiveArrayList{
+public class RSSHNovinyCitac implements GiveArrayList{
 
     private String title = "";
     private String link = "";
     private String datum ="";
     private String cas = "";
-    private String dennik ="SME";
-    private Context context=null;
+    private String dennik ="HNonline";
+    private Context context = null;
 
     private boolean koniec=false;
     private boolean zaciatok=true;
@@ -34,27 +34,27 @@ public class RSSSmeCitac implements GiveArrayList{
 
     private ArrayList<PrvokPola> pole;
 
-    private String urlString="http://rss.sme.sk/rss/rss.asp?id=frontpage";
+    private String urlString="http://hnonline.sk/rss/8";
     private XmlPullParserFactory xmlFactoryObject;
 
     public volatile boolean parsingComplete = true;
 
-    public RSSSmeCitac(Context context){
+
+
+
+
+
+    public RSSHNovinyCitac(Context context){
 
         pole = new ArrayList<PrvokPola>();
-
         this.context=context;
 
         linky = new HashMap<>();
-        linky.put("Hlavne spravy","http://rss.sme.sk/rss/rss.asp?id=frontpage");
-        linky.put("Z domova","http://rss.sme.sk/rss/rss.asp?sek=smeonline&rub=online_zdom");
-        linky.put("Zahranicie","http://rss.sme.sk/rss/rss.asp?sek=smeonline&rub=online_zahr");
-        linky.put("Ekonomika","http://rss.sme.sk/rss/rss.asp?sek=ekon");
-        linky.put("Kultura","http://rss.sme.sk/rss/rss.asp?sek=kult");
-        linky.put("Sport","http://rss.sme.sk/rss/rss.asp?sek=sport");
-        linky.put("Tech","http://rss.sme.sk/rss/rss.asp?sek=tech");
-        linky.put("Auto","http://rss.sme.sk/rss/rss.asp?sek=auto");
-
+        linky.put("Hlavne spravy","http://hnonline.sk/rss/8");
+        linky.put("Slovensko","http://hnonline.sk/rss/8/119");
+        linky.put("Svet","http://hnonline.sk/rss/8/120");
+        linky.put("Ekonomika","http://hnonline.sk/rss/8/117");
+        linky.put("Sport","http://hnonline.sk/rss/8/121");
 
 
     }
@@ -124,6 +124,7 @@ public class RSSSmeCitac implements GiveArrayList{
         SharedPreferences preferences = context.getSharedPreferences("WIDGET_FOR_RSS", Context.MODE_PRIVATE);
         urlString=linky.get(preferences.getString("Rubrika",""));
 
+
         Thread thread = new Thread(new Runnable(){
 
             public void parseXMLAndStoreIt(XmlPullParser myParser) {
@@ -136,7 +137,7 @@ public class RSSSmeCitac implements GiveArrayList{
 
                     while (event != XmlPullParser.END_DOCUMENT) {
                         String name = myParser.getName();
-
+                        //Log.e("asd",""+name);
 
                         switch (event) {
                             case XmlPullParser.START_TAG:
@@ -152,7 +153,7 @@ public class RSSSmeCitac implements GiveArrayList{
 
                                 if (zaciatok) {
 
-                                    if (name.equals("image")) {
+                                    if (name.equals("title")) {
 
                                         zaciatok = false;
                                     }
@@ -171,12 +172,8 @@ public class RSSSmeCitac implements GiveArrayList{
 
                                         datum = pomocnyDatum.substring(5, 16);
                                         cas = pomocnyDatum.substring(17, 25);
-
-                                    } else if (name.equals("dc:creator")) {
-                                        String dennik = text;
-                                        //Log.e("ok",""+ pomocnyDatum);
-                                        //    Log.d("datum", "" + datum);
-                                        //  Log.d("cas", "" + cas);
+                                      //  Log.e("datum",""+datum);
+                                      //  Log.e("cas","cas"+cas);
                                         pole.add(new PrvokPola(title, datum, cas, dennik, link));
                                         break;
                                     } else {

@@ -2,18 +2,23 @@ package com.example.matus.skuskawidget;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +29,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends ListActivity implements View.OnClickListener{
 
     private ArrayList<PrvokPola> pole= new ArrayList<PrvokPola>();
     private TextView nazov;
@@ -32,6 +37,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private ImageButton refresh;
     private ImageButton setting;
     protected Context context = this;
+    private String casopis="SME";
 
         //TODO spravit shared preferencies na dennik aky prave chce pozerat - v alarm manayerovi budem prepisovat datum na + cas ktory chcem
         //TODO v obnovit budem vztvarat alarmanazer
@@ -56,7 +62,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         pole.add(new PrvokPola("Treti titulok", "25.25.2015", "12:25", "Aktuality", "http://aktuality.sk"));
         */
 
-
         new Obnova().execute();
 
 
@@ -75,13 +80,19 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 //Stop MediaPlayer
                // Log.e(" linka"," "+pole.size());
                 Intent intent = new Intent(MainActivity.this,Settings.class);
-                startActivity(intent);
+                startActivityForResult(intent,1);
                 break;
 
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode,int resultCode,Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        new Obnova().execute();
+    }
 
     private class Obnova extends AsyncTask<Void, Void, Void> {
 
@@ -94,24 +105,46 @@ public class MainActivity extends Activity implements View.OnClickListener {
             NetworkInfo netInfo = cm.getActiveNetworkInfo();
             if (netInfo != null && netInfo.isAvailable() && netInfo.isConnected()) {
 
-
-                //TODO viac casopisov
-
-                obj = new RSSSmeCitac();
-                obj.fetchXML();
-
-                RSSSmeCitac pom =(RSSSmeCitac) obj;
-
+                SharedPreferences preferences = getSharedPreferences("WIDGET_FOR_RSS",Context.MODE_PRIVATE);
+                if(preferences.getString("Dennik","")!=""){
+                    casopis=preferences.getString("Dennik","");
+                 //   Log.e("dennik",""+preferences.getString("Dennik",""));
+                }
 
                 Log.e("Asyntask", "pocas");
 
-                while (!((RSSSmeCitac) obj).getkoniec()){
+                if(casopis.equals("SME")){
+
+                    obj = new RSSSmeCitac(context);
+                    obj.fetchXML();
+                    RSSSmeCitac pom =(RSSSmeCitac) obj;
+
+                    while (!((RSSSmeCitac) obj).getkoniec()){
+                    }
+
+
+                }else if(casopis.equals("HNonline")){
+
+                    obj = new RSSHNovinyCitac(context);
+                    obj.fetchXML();
+                    while (!((RSSHNovinyCitac) obj).getkoniec()){
+
+
+                    }
+
+
+                }else if(casopis.equals("DennikN")){
+
+                    obj = new RSSDennikNCitac(context);
+                    obj.fetchXML();
+                    while (!((RSSDennikNCitac) obj).getkoniec()){
+
+
+                    }
 
 
                 }
 
-
-                // Log.e("Ukoncenie","ukoncena");
                 }
                 return null;
             }
@@ -130,7 +163,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
                 pole = obj.getArrayList();
 
-                RSSSmeCitac pom =(RSSSmeCitac) obj;
+               // RSSSmeCitac pom =(RSSSmeCitac) obj;
 
             //    pom.vypis();
 
@@ -138,10 +171,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
                 if (obj.getDennik().equals("SME")) {
                     ((TextView) findViewById(R.id.nazov)).setTextColor(getResources().getColor(R.color.DarkRed));
-                    Log.e("Asyntask", "vypis");
+                  //  Log.e("Asyntask", "vypis");
 
                 }
-                ListView listView = (ListView) findViewById(R.id.list);
+                else if (obj.getDennik().equals("HNonline")) {
+                    ((TextView) findViewById(R.id.nazov)).setTextColor(getResources().getColor(R.color.DodgerBlue));
+                  //  Log.e("Asyntask", "vypis");
+
+                }else if (obj.getDennik().equals("DennikN")) {
+                    ((TextView) findViewById(R.id.nazov)).setTextColor(getResources().getColor(R.color.Crimson));
+                    //  Log.e("Asyntask", "vypis");
+
+                }
+
+                ListView listView = (ListView) findViewById(android.R.id.list);
 
                 CustomAdapter adapter= new CustomAdapter(context,pole);
 
@@ -173,4 +216,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onListItemClick(ListView parent, View v, int position, long id) {
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(pole.get(position).getLinka()));
+
+        startActivity(intent);
+
+    }
+
 }

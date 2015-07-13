@@ -9,6 +9,7 @@
         android:text="Nastavenia"
         android:textSize="40dp"
         android:padding="10dp"
+        android:textColor="@color/Black"
         android:id="@+id/nadpisNastavenia" />
 
     <LinearLayout
@@ -36,6 +37,32 @@
             android:paddingTop="10dp"
             android:textAlignment="center"
             android:id="@+id/spinner" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Zameranie:"
+            android:textSize="20dp"
+            android:padding="10dp"
+            android:textColor="@color/Black"
+            android:id="@+id/textZameranie" />
+
+        <Spinner
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinnerRubrika"
+            android:paddingLeft="20dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:textAlignment="center"
+            />
+
 
     </LinearLayout>
 
@@ -73,23 +100,14 @@
 
 
         <Button
-            android:padding="5dp"
-            android:layout_width="0dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
-            android:text="Uloz a ukonci"
+            android:text="Uloz"
             android:id="@+id/btnsUlozenim"
 
         />
-
-
-        <Button
-            android:padding="5dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="50"
-            android:text="Ukonci bez Ulozenia"
-            android:id="@+id/btnBezUlozenia" />
 
 
     </LinearLayout>
